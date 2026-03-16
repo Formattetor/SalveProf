@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messaggio per il Prof</title>
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --text-color: #00ff00;
+            --danger-color: #ff0000;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 90%;
+            max-width: 800px;
+            z-index: 10;
+        }
+
+        .active {
+            display: flex;
+        }
+
+        h1 { font-size: 3rem; margin-bottom: 20px; }
+        p { font-size: 1.5rem; }
+
+        button {
+            background: transparent;
+            color: var(--text-color);
+            border: 2px solid var(--text-color);
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s;
+            margin: 10px;
+        }
+
+        button:hover {
+            background: var(--text-color);
+            color: black;
+            box-shadow: 0 0 20px var(--text-color);
+        }
+
+        input {
+            background: #222;
+            border: 1px solid var(--text-color);
+            color: white;
+            padding: 10px;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        /* Container per le foto che girano */
+        #image-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .tony-img {
+            position: absolute;
+            width: 150px;
+            transition: transform 0.1s linear;
+        }
+
+        /* Simulazione CMD */
+        #cmd-screen {
+            background: black;
+            color: lightgrey;
+            text-align: left;
+            align-items: flex-start;
+            padding: 20px;
+            font-size: 1rem;
+            width: 100vw;
+            height: 100vh;
+            max-width: 100%;
+            overflow-y: auto;
+        }
+
+        .cmd-line { margin-bottom: 5px; }
+        .cmd-red { color: var(--danger-color); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div id="page1" class="screen active">
+        <h1>Salve Prof!</h1>
+        <button onclick="nextPage('page2', startFloatingImages)">prosegui</button>
+    </div>
+
+    <div id="page2" class="screen">
+        <h1 style="color: var(--danger-color);">Sei stato TonyPitonyzzato!</h1>
+        <p>Hai 15s per mettere 10 a tutti in pagella, senno addio al System32! AJJAJAJjajaj!</p>
+        <div style="margin-top: 20px;">
+            <button onclick="stopFloatingImages(); nextPage('page3')">fatto</button>
+            <button onclick="stopFloatingImages(); startCMD()">Col cavolo</button>
+        </div>
+    </div>
+
+    <div id="page3" class="screen">
+        <p>Continui la canzone:</p>
+        <h2>"Mi piacciono le nere, non .... ........"</h2>
+        <input type="text" id="quiz-answer" placeholder="Scrivi qui...">
+        <button onclick="checkAnswer()">Invia</button>
+    </div>
+
+    <div id="page4a" class="screen">
+        <h1 style="color: var(--danger-color);">Pensa di essersi salvato?</h1>
+        <p>TonyPitony stupisce sempre, addio System32!</p>
+        <button onclick="startCMD()">Oops...</button>
+    </div>
+
+    <div id="page4b" class="screen">
+        <h1>Prof ammiro la sua dedizione...</h1>
+        <p>TonyPitony l'ha graziata (forse)!</p>
+        <p>Inizializzazione protocollo di sicurezza...</p>
+    </div>
+
+    <div id="cmd-screen" class="screen">
+        <div id="cmd-content"></div>
+    </div>
+
+    <div id="image-container"></div>
+
+    <script>
+        // --- CONFIGURAZIONE ---
+        const TONY_IMG_URL = "https://via.placeholder.com/150/ff0000/ffffff?text=Tony+Pitony"; // <--- CAMBIA QUESTO URL
+        let floatingInterval;
+
+        function nextPage(pageId, callback) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            if (callback) callback();
+        }
+
+        // --- ANIMAZIONI IMMAGINI ---
+        function startFloatingImages() {
+            const container = document.getElementById('image-container');
+            floatingInterval = setInterval(() => {
+                const img = document.createElement('img');
+                img.src = TONY_IMG_URL;
+                img.className = 'tony-img';
+                img.style.left = Math.random() * 100 + 'vw';
+                img.style.top = Math.random() * 100 + 'vh';
+                
+                // Movimento casuale
+                let angle = Math.random() * 360;
+                img.style.transform = `rotate(${angle}deg)`;
+                
+                container.appendChild(img);
+
+                // Rimuovi dopo un po' per non appesantire
+                setTimeout(() => img.remove(), 5000);
+            }, 300);
+        }
+
+        function stopFloatingImages() {
+            clearInterval(floatingInterval);
+            document.getElementById('image-container').innerHTML = '';
+        }
+
+        function startConfetti() {
+            const container = document.getElementById('image-container');
+            for(let i=0; i<50; i++) {
+                setTimeout(() => {
+                    const img = document.createElement('img');
+                    img.src = TONY_IMG_URL;
+                    img.className = 'tony-img';
+                    img.style.width = '50px';
+                    img.style.left = Math.random() * 100 + 'vw';
+                    img.style.top = '-100px';
+                    img.style.transition = 'all 3s linear';
+                    container.appendChild(img);
+                    
+                    setTimeout(() => {
+                        img.style.top = '120vh';
+                        img.style.transform = `rotate(${Math.random() * 1000}deg)`;
+                    }, 100);
+                }, i * 100);
+            }
+        }
+
+        // --- LOGICA QUIZ ---
+        function checkAnswer() {
+            const ans = document.getElementById('quiz-answer').value.toLowerCase().trim();
+            if (ans === "non sono razzista") {
+                nextPage('page4a');
+            } else {
+                nextPage('page4b', () => {
+                    startConfetti();
+                    setTimeout(startCMD, 4000); // Passa al CMD dopo 4 secondi
+                });
+            }
+        }
+
+        // --- SIMULAZIONE CMD ---
+        async function startCMD() {
+            nextPage('cmd-screen');
+            const content = document.getElementById('cmd-content');
+            const lines = [
+                "Microsoft Windows [Versione 10.0.19045.3324]",
+                "(c) Microsoft Corporation. Tutti i diritti riservati.",
+                "",
+                "C:\\Users\\Professore> del /s /q C:\\Windows\\System32\\*",
+                "Eliminazione in corso...",
+            ];
+
+            // Aggiungi linee iniziali
+            for (let line of lines) {
+                await addCommandLine(line, 50);
+            }
+
+            // Simulazione cancellazione file a raffica
+            const systemFiles = [
+                "hal.dll", "ntoskrnl.exe", "user32.dll", "kernel32.dll", "gdi32.dll", 
+                "shell32.dll", "winlogon.exe", "drivers/etc/hosts", "config/SAM",
+                "bootstat.dat", "imm32.dll", "comctl32.dll"
+            ];
+
+            for (let i = 0; i < 50; i++) {
+                const file = systemFiles[Math.floor(Math.random() * systemFiles.length)];
+                const randomHex = Math.random().toString(16).substring(2, 8);
+                await addCommandLine(`DELETING: C:\\Windows\\System32\\${file}_${randomHex}.sys ... [OK]`, 20, true);
+            }
+
+            await addCommandLine("", 500);
+            await addCommandLine("ERRORE DI SISTEMA CRITICO: FILE SYSTEM CORROTTO.", 100, true);
+            await addCommandLine("Il PC verrà riavviato tra 5 secondi per prevenire danni permanenti...", 100, true);
+            
+            setTimeout(() => {
+                document.body.innerHTML = "<h1 style='color:white; font-family:sans-serif; display:flex; height:100vh; width:100vw; align-items:center; justify-content:center; background:#0078d7;'>:( <br> Il tuo PC ha riscontrato un problema e deve essere riavviato.</h1>";
+            }, 5000);
+        }
+
+        function addCommandLine(text, speed, isRed = false) {
+            return new Promise(resolve => {
+                const line = document.createElement('div');
+                line.className = 'cmd-line' + (isRed ? ' cmd-red' : '');
+                document.getElementById('cmd-content').appendChild(line);
+                
+                let i = 0;
+                const timer = setInterval(() => {
+                    line.innerHTML += text.charAt(i);
+                    i++;
+                    if (i >= text.length) {
+                        clearInterval(timer);
+                        document.getElementById('cmd-screen').scrollTop = document.getElementById('cmd-screen').scrollHeight;
+                        resolve();
+                    }
+                }, speed);
+            });
+        }
+    </script>
+</body>
+</html>
