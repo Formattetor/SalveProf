@@ -111,14 +111,14 @@
 
     <div id="page1" class="screen active">
         <h1>Salve Prof!</h1>
-        <button onclick="nextPage('page2', startFloatingImages)">prosegui</button>
+        <button onclick="nextPage('page2', startFloatingImages)">Prosegui</button>
     </div>
 
     <div id="page2" class="screen">
         <h1 style="color: var(--danger-color);">Sei stato TonyPitonyzzato!</h1>
         <p>Hai 15s per mettere 10 a tutti in pagella, senno addio al System32! AJJAJAJjajaj!</p>
         <div style="margin-top: 20px;">
-            <button onclick="stopFloatingImages(); nextPage('page3')">fatto</button>
+            <button onclick="stopFloatingImages(); nextPage('page3')">Fatto</button>
             <button onclick="stopFloatingImages(); startCMD()">Col cavolo</button>
         </div>
     </div>
@@ -150,7 +150,7 @@
 
     <script>
         // --- CONFIGURAZIONE ---
-        const TONY_IMG_URL = "https://via.placeholder.com/150/ff0000/ffffff?text=Tony+Pitony"; // <--- CAMBIA QUESTO URL
+        const TONY_IMG_URL = "Tony.png"; // <--- CAMBIA QUESTO URL
         let floatingInterval;
 
         function nextPage(pageId, callback) {
