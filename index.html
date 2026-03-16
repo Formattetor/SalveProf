@@ -209,7 +209,7 @@
         // --- LOGICA QUIZ ---
         function checkAnswer() {
             const ans = document.getElementById('quiz-answer').value.toLowerCase().trim();
-            if (ans === "non sono razzista") {
+            if (ans === "sono razzista") {
                 nextPage('page4a');
             } else {
                 nextPage('page4b', () => {
@@ -259,23 +259,31 @@
         }
 
         function addCommandLine(text, speed, isRed = false) {
-            return new Promise(resolve => {
-                const line = document.createElement('div');
-                line.className = 'cmd-line' + (isRed ? ' cmd-red' : '');
-                document.getElementById('cmd-content').appendChild(line);
-                
-                let i = 0;
-                const timer = setInterval(() => {
-                    line.innerHTML += text.charAt(i);
-                    i++;
-                    if (i >= text.length) {
-                        clearInterval(timer);
-                        document.getElementById('cmd-screen').scrollTop = document.getElementById('cmd-screen').scrollHeight;
-                        resolve();
-                    }
-                }, speed);
-            });
+    return new Promise(resolve => {
+        const line = document.createElement('div');
+        line.className = 'cmd-line' + (isRed ? ' cmd-red' : '');
+        document.getElementById('cmd-content').appendChild(line);
+        
+        // Se la velocità è 0, scrivi tutto subito
+        if (speed === 0) {
+            line.innerHTML = text;
+            document.getElementById('cmd-screen').scrollTop = document.getElementById('cmd-screen').scrollHeight;
+            resolve();
+            return;
         }
+
+        let i = 0;
+        const timer = setInterval(() => {
+            line.innerHTML += text.charAt(i);
+            i++;
+            if (i >= text.length) {
+                clearInterval(timer);
+                document.getElementById('cmd-screen').scrollTop = document.getElementById('cmd-screen').scrollHeight;
+                resolve();
+            }
+        }, speed);
+    });
+}
     </script>
 </body>
 </html>
