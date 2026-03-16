@@ -222,7 +222,6 @@
         // --- SIMULAZIONE CMD ---
         async function startCMD() {
             nextPage('cmd-screen');
-            const content = document.getElementById('cmd-content');
             const lines = [
                 "Microsoft Windows [Versione 10.0.19045.3324]",
                 "(c) Microsoft Corporation. Tutti i diritti riservati.",
@@ -233,7 +232,7 @@
 
             // Aggiungi linee iniziali
             for (let line of lines) {
-                await addCommandLine(line, 50);
+                await addCommandLine(line, 20);
             }
 
             // Simulazione cancellazione file a raffica
@@ -246,12 +245,13 @@
             for (let i = 0; i < 50; i++) {
                 const file = systemFiles[Math.floor(Math.random() * systemFiles.length)];
                 const randomHex = Math.random().toString(16).substring(2, 8);
-                await addCommandLine(`DELETING: C:\\Windows\\System32\\${file}_${randomHex}.sys ... [OK]`, 20, true);
+                await addCommandLine(`DELETING: C:\\Windows\\System32\\${file}_${randomHex}.sys ... [OK]`, 0, true);
+                await new Promise(r => setTimeout(r, 40));
             }
 
-            await addCommandLine("", 500);
-            await addCommandLine("ERRORE DI SISTEMA CRITICO: FILE SYSTEM CORROTTO.", 100, true);
-            await addCommandLine("Il PC verrà riavviato tra 5 secondi per prevenire danni permanenti...", 100, true);
+            await new Promise(r => setTimeout(r, 300));
+            await addCommandLine("ERRORE DI SISTEMA CRITICO: FILE SYSTEM CORROTTO.", 50, true);
+            await addCommandLine("Il PC verrà riavviato tra 5 secondi per prevenire danni permanenti...", 50, true);
             
             setTimeout(() => {
                 document.body.innerHTML = "<h1 style='color:white; font-family:sans-serif; display:flex; height:100vh; width:100vw; align-items:center; justify-content:center; background:#0078d7;'>:( <br> Il tuo PC ha riscontrato un problema e deve essere riavviato.</h1>";
@@ -259,31 +259,35 @@
         }
 
         function addCommandLine(text, speed, isRed = false) {
-    return new Promise(resolve => {
-        const line = document.createElement('div');
-        line.className = 'cmd-line' + (isRed ? ' cmd-red' : '');
-        document.getElementById('cmd-content').appendChild(line);
-        
-        // Se la velocità è 0, scrivi tutto subito
-        if (speed === 0) {
-            line.innerHTML = text;
-            document.getElementById('cmd-screen').scrollTop = document.getElementById('cmd-screen').scrollHeight;
-            resolve();
-            return;
-        }
+            return new Promise(resolve => {
+                const line = document.createElement('div');
+                line.className = 'cmd-line' + (isRed ? ' cmd-red' : '');
+                const cmdContent = document.getElementById('cmd-content');
+                const cmdScreen = document.getElementById('cmd-screen');
+                cmdContent.appendChild(line);
 
-        let i = 0;
-        const timer = setInterval(() => {
-            line.innerHTML += text.charAt(i);
-            i++;
-            if (i >= text.length) {
-                clearInterval(timer);
-                document.getElementById('cmd-screen').scrollTop = document.getElementById('cmd-screen').scrollHeight;
-                resolve();
-            }
-        }, speed);
-    });
-}
+                // Se la velocità è 0 o il testo è vuoto, scrivi tutto subito
+                if (speed === 0 || text.length === 0) {
+                    line.textContent = text;
+                    cmdScreen.scrollTop = cmdScreen.scrollHeight;
+                    resolve();
+                    return;
+                }
+
+                let i = 0;
+                let accumulated = '';
+                const timer = setInterval(() => {
+                    accumulated += text[i];
+                    line.textContent = accumulated;
+                    i++;
+                    if (i >= text.length) {
+                        clearInterval(timer);
+                        cmdScreen.scrollTop = cmdScreen.scrollHeight;
+                        resolve();
+                    }
+                }, speed);
+            });
+        }
     </script>
 </body>
 </html>
